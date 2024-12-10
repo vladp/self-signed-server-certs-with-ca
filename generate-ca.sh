@@ -17,7 +17,7 @@
 # Generate a non encrypted private key for the CA (add -des3 for encryption)
 # Output: ca.key.pem
 echo "-- Generating CA Private Key"
-openssl genrsa -out ./ca.key.pem 1024
+openssl genrsa -out ./ca.key.pem 2048
 
 # Generate a CA cert using the CA's private key
 # Output: ca.crt.pem
