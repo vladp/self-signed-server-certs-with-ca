@@ -35,7 +35,7 @@ else
         
     # Generate a server key
     echo "-- Generating Server Private Key"
-    openssl genrsa -out ./$1/$1.key.pem 1024
+    openssl genrsa -out ./$1/$1.key.pem 2048
 
     # Get next serial number
     # if we don't have a file, start at zero
@@ -64,15 +64,15 @@ else
     openssl pkcs12 -export -in ./$1/$1.crt.pem -inkey ./$1/$1.key.pem \
                    -out ./$1/$1-cert-and-key.p12 -name $1 \
                    -CAfile ./ca.crt.pem -caname root \
-                   -password pass:password
+                   -password pass:mystorepassword
 
     # Generate a trust store for trusting only this certificate, not all certificates issued by the ca
-    keytool -importcert -alias $1 -file ./$1/$1.crt.pem -v -trustcacerts -noprompt -keystore ./$1/$1-only-not-entire-ca-truststore.jks -storepass password
+    keytool -importcert -alias $1 -file ./$1/$1.crt.pem -v -trustcacerts -noprompt -keystore ./$1/$1-only-not-entire-ca-truststore.jks -storepass mystorepassword
 
     # Add PKCS12 content to JKS 
     keytool -importkeystore \
-            -deststorepass password -destkeypass password -destkeystore ./$1/$1-server.jks \
-            -srckeystore ./$1/$1-cert-and-key.p12 -srcstoretype PKCS12 -srcstorepass password \
+            -deststorepass mystorepassword -destkeypass mystorepassword -destkeystore ./$1/$1-server.jks \
+            -srckeystore ./$1/$1-cert-and-key.p12 -srcstoretype PKCS12 -srcstorepass mystorepassword \
             -alias $1
 
     ls -latr ./$1/
